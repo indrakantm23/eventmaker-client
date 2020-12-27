@@ -3,9 +3,14 @@ import { canUseDOM } from "exenv";
 
 export default class CommonService {
 
-
     static getApiUrl(){
-        const url = "http://localhost:5000/";
+        var url = "";
+        const hostname = canUseDOM ? window.location.hostname : 'localhost';
+        if(hostname == 'localhost'){
+            url = "http://localhost:5000/";
+        }else{
+            url = "https://event-maker-back.herokuapp.com/";
+        }
         return url;
     }
 
