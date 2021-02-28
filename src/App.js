@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
 import Header from './shared/Header';
+import Footer from './shared/Footer';
 import AppTemplate from './AppTemplate';
 import { Router } from './routing/Routing';
+import { Provider } from 'react-redux';
+import store from './store';
 
 function App() {
 
@@ -29,15 +32,15 @@ function App() {
   },[])
 
   return (
-    <React.Fragment>
-        
+    <Provider store={store}>
         <div style={{marginTop: 60}}>
           <Router>
-          <Header currentLocation={{city}}/>
+              <Header currentLocation={{city}}/>
               <AppTemplate />
+              <Footer/>
           </Router>
         </div>
-    </React.Fragment>
+    </Provider>
   );
 }
 

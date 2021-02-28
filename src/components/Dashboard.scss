@@ -32,24 +32,40 @@
 
 .event-grid-div{
     display: grid;
-    grid-template-columns: repeat(auto-fill, 305px);
-    margin-bottom: 40px;
+    grid-template-columns: repeat(auto-fill, 294px);
+    margin-bottom: 100px;
     background: white;
     padding: 20px;
-    row-gap: 20px;
+    grid-row-gap: 20px;
+    row-gap: 30px;
+    grid-column-gap: 15px;
 }
 
 .common-heading{
-    text-align: center;
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 20px;
+    font-size: 17px;
+    font-weight: 600;
+    // margin-bottom: 20px;
     margin-top: 30px;
     color: #333;
+    margin-left: 20px;
 }
 
 .button-group-container{
     display: table;
     margin: 0 auto;
     margin-top: 30px;
+}
+
+
+
+
+
+
+
+
+// RESPONSIVE SCREEN
+@media only screen and (max-width: 600px){
+    .event-grid-div{
+        grid-template-columns: repeat(auto-fill, 100%);
+    }
 }

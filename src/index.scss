@@ -6,7 +6,25 @@
 }
 
 body {
-  font-family: $body-font;
-  background: $secondary-white;
+  font-family: 'Roboto';
+  // background: $secondary-white;
 }
 
+.MuiBackdrop-root{
+  z-index: 1000 !important;
+}
+.MuiCircularProgress-root { 
+    left: 50%; 
+    position: absolute; 
+    top: 44vh; 
+}
+
+.MuiStepIcon-root.MuiStepIcon-completed{
+  fill: #268723 !important;
+}
+.MuiStepIcon-root.MuiStepIcon-active{
+  fill: #268723 !important;
+}
+.MuiStepLabel-label.MuiStepLabel-alternativeLabel{
+  font-size: 12px !important;
+}

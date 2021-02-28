@@ -1,18 +1,45 @@
 @import './../shared/variables.scss';
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 .event-card{
-    width: 90%;
+    width: 100%;
     overflow: hidden;
-    padding: 6px;
-    height: 240px;
-    border: 1px solid #ddd;
+    cursor: pointer;
+    height: 270px;
+    position: relative;
+    border-bottom: 1px solid #d6d6d6;
 }
 .event-card .event-banner{
     width: 100%;
-    height: 150px;
+    height: 220px;
     object-fit: cover;
-    border-radius: 3px 3px 0 0;
+    border-radius: 5px 5px 0 0;
 }
+
+.date-time{
+    position: absolute;
+    margin-top: 197px;
+    color: #FFF;
+    font-size: 12px;
+    background: rgba(0,0,0,.8);
+    // background-color: rgba(255, 255, 255, 0.2);
+    padding: 4px;
+    left: 0px;
+    right: 0px;
+}
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+    .date-time {
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      background-color: rgba(0, 0, 0, 0.5);  
+    }
+  }
 
 .calendar-div{
     display: inline-block;
@@ -33,33 +60,222 @@
     text-transform: uppercase;
     font-weight: 300;
     font-size: 13px;
-    margin-top: 5px;
 }
 .calendar-date{
     text-align: center;
     font-size: 23px;
     padding: 4px;
-    font-weight: 300;
-    color: #222;
-    margin-top: -5px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: -8px;
+    font-family: 'Google Sans';
 }
 .event-name{
     display: inline-block;
-    font-size: 17px;
-    margin-top: 15px;
-    margin-left: 10px;
+    font-size: 14px;
+    margin-top: 0px;
+    // margin-left: 5px;
     font-weight: 500;
+}
+.event-full-address{
+    display: block;
+    font-size: 11px;
+    margin-top: 3px;
+    color: #222;
 }
 
 .create-event-div{
     background: $white-color;
     margin: 30px;
-    height: 200px;
-    box-shadow: 0 0 2px #ccc;
+    // box-shadow: 0 0 2px #ccc;
     padding: 30px;
+    margin-top: 70px;
 }
 .create-event-div > h1{
-    font-size: 19px;
+    font-size: 18px;
     font-family: 'Roboto';
     font-weight: 500;
+    text-transform: uppercase;
+    color: #444;
+}
+
+.label{
+    // font-family: 'Roboto';
+    // font-weight: 400;
+    // font-size: 13px;
+    // display: block;
+    // margin-bottom: 5px;
+    // color: #444;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 11px;
+    display: block;
+    margin-bottom: 5px;
+    color: #444;
+    text-transform: uppercase;
+}
+.form-input-container{
+    margin: 25px 0;
+}
+
+.input-field{
+    border: 1px solid #ccc!important;
+    padding: 6px;
+    font-size: 13px !important;
+    border-radius: 1px;
+    outline: none;
+    font-family: 'Roboto';
+}
+
+.input-field:focus{
+    border: 1.3px solid #000 !important;
+}
+
+.anchor-non-hyper{
+    font-size: 13px;
+    font-family: 'Roboto';
+    color: #389cd1;
+    cursor: pointer;
+}
+
+.anchor-non-hyper:hover{
+    text-decoration: underline !important;
+}
+
+#map {
+    height: 100%;
+}
+
+.continue-btn{
+    border: none;
+    background: forestgreen;
+    width: 320px;
+    height: 35px;
+    color: white;
+    font-weight: 500;
+    font-family: 'Google Sans';
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    text-align: center;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.continue-btn > span {
+    display: inline-block;
+    float: left;
+    margin-left: 16px;
+    padding-top: 2px;
+}
+
+.login-div{
+    padding: 30px;
+    background: #FFF;
+    margin: 20px;
+    margin-top: 80px;
+    // box-shadow: 0 0 2px #eee;
+}
+.login-div .heading{
+    font-size: 18px;
+    // font-family: 'Roboto';
+    // font-weight: 400;
+}
+.info-icon{
+    position: absolute;
+    right: 0;
+    top: 25px;
+    fill: #c76358;
+}
+.not-a-member{
+    font-family: 'Google Sans';
+    font-weight: 500;
+    font-size: 13px;
+    color: #333;
+    margin-left: 20px;
+}
+.anchor{
+    color: #05b1e6;
+    cursor: pointer;
+}
+.upload-img-div{
+    border: 2px dashed #ccc;
+    border-radius: 2px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    height: 130px;
+    margin-top: 10px;
+    cursor: pointer;
+    align-items: center;
+    width: 100%;
+}
+.selected-img{
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.upload-img-div svg{
+    height: 60px;
+    width: 60px;
+    fill: #bbb;
+}
+
+// .MuiBackdrop-root{
+//     z-index: -1 !important;
+// }
+.MuiDialog-paperWidthSm{
+    width: 500px;
+    height: 300px;
+}
+.MuiTypography-h6{
+    font-family: 'Google Sans';
+    font-size: 18px;
+}
+
+.backdrop{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.6);
+}
+
+.radiogroup{
+    display: unset;
+}
+.MuiFormControlLabel-label{
+    font-size: 13px;
+}
+
+
+.add-category{
+    color: dodgerblue;
+    display: inline-block;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-weight: 400;
+    cursor: pointer;
+}
+.add-category svg{
+    float: left;
+    width: 17px;
+    margin-top: -2px;
+}
+.save-category{
+    float: right;
+    cursor: pointer;
+    // margin-right: 100px;
+    background: dodgerblue;
+    border: none;
+    color: #FFF;
+    width: 100px;
+    padding: 7px;
+    border-radius: 2px;
+    outline: none;
+}
+.MuiPaper-elevation1{
+    box-shadow: none !important;
 }
