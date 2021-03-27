@@ -10,11 +10,13 @@ const AsyncCreateAnEvent = lodable(() => import('./components/CreateEvent'))
 const AsyncSignUp = lodable(() => import('./auth/Signup'))
 const AsyncLogin = lodable(() => import('./auth/Login'))
 const AsyncEvent = lodable(() => import('./components/Event'))
-const AsyncEvents = lodable(() => import('./components/Events'))
+// const AsyncEvents = lodable(() => import('./components/Events'))
 
 const AsyncAbout = lodable(() => import('./components/pages/About'))
 const AsyncPricing = lodable(() => import('./components/pages/Pricing'))
 const AsyncContactUs = lodable(() => import('./components/pages/ContactUs'))
+const AsyncWallet = lodable(() => import('./components/pages/Wallet'))
+const AsyncMyBookings = lodable(() => import('./components/pages/MyBookings'))
 
 const AppTemplate = () => (
     <React.Fragment>
@@ -24,10 +26,12 @@ const AppTemplate = () => (
             <Route exact path={Routes.SignUp} component={AsyncSignUp} />
             <Route exact path={Routes.Login} component={AsyncLogin} />
             <Route exact path={Routes.Event} component={AsyncEvent} />
-            <Route exact path={Routes.Events} component={AsyncEvents} />
+            {/* <Route exact path={Routes.Events} component={AsyncEvents} /> */}
             <Route exact path={Routes.About} component={AsyncAbout} />
             <Route exact path={Routes.Pricing} component={AsyncPricing} />
             <Route exact path={Routes.ContactUs} component={AsyncContactUs} />
+            <Route exact path={Routes.Wallet} component={AsyncWallet} />
+            <Route exact path={Routes.MyBookings} component={AsyncMyBookings} />
         </Switch>
     </React.Fragment>
 );

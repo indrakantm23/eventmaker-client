@@ -1,0 +1,59 @@
+.booking-div{
+    min-height: 490px;
+    padding: 20px;
+}
+
+.booking-div h1{
+    width: 80%;
+    margin: 0 auto;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #222;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.booking-image{
+    width: 140px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.bookings-container{
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-bottom: 1px solid #e9e9e9;
+}
+.bookings-container h4{
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Roboto';
+}
+.name-container{
+    display: inline-block;
+    position: absolute;
+}
+.name-container2{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+}
+
+.booked-event-date{
+    font-size: 11px;
+    display: block;
+    margin-top: 3px;
+}
+
+.location-icon{
+    width: 14px;
+    float: left;
+    margin-top: -5px;
+    fill: #333;
+    margin-right: 3px;
+}

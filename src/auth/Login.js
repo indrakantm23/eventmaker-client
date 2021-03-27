@@ -3,8 +3,9 @@ import './../components/common.scss';
 import InfoIcon from '@material-ui/icons/Info';
 import Tooltip from '@material-ui/core/Tooltip';
 import CommonService from './../components/commonService';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { Input, Label } from './../components/pages/FormFields';
+import { makeStyles } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
+import { Label } from './../components/pages/FormFields';
 
 export default function Login(props) {
 
@@ -34,18 +35,32 @@ export default function Login(props) {
     const [password, setPassword] = useState('');
     const [emailFocused, setEmailFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [message, setErrorMessage] = useState('');
 
 
     function Login(e) {
         e.preventDefault()
         if(email !== '' && password !== ''){
             CommonService.loginUser({email, password}).then((res) => {
-                localStorage.setItem('isLoggedIn', true);
-                localStorage.setItem('userData', JSON.stringify(res.user))
+                if(res.user){
+                    localStorage.setItem("user", JSON.stringify(res.user));
+                    localStorage.setItem('loggedIn', true)
+                    props.history.push({
+                        pathname: props.location.state && props.location.state.url ? props.location.state.url : '/',
+                        state: { url: props.location.pathname },
+                    });
+                    window.location.reload()
+                }
+                else {
+                    setShowErrorMessage(true);
+                    setErrorMessage(res.info.message);
+                }
             })
         }
         else{
-            console.log('All fields are mandatory')
+            setShowErrorMessage(true);
+            setErrorMessage('Email and Password can not be empty');
         }
     }
 
@@ -53,7 +68,13 @@ export default function Login(props) {
     return (
         <div className="login-div">
             
+
             <form style={{display: 'block', margin: '0 auto', width: '40%'}} onSubmit={(e)=> Login(e)}>
+                {showErrorMessage && 
+                    <Alert severity="error" color="warning">
+                        {message}
+                    </Alert>
+                }
                 <h5 className="heading">Login to continue </h5>
                 <div className="form-input-container" style={{position: 'relative', width: 310}}>
                     <Label 

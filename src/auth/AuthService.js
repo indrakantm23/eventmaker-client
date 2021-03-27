@@ -16,11 +16,10 @@ export default class AuthService extends Component{
     }
     
     static isLoggedIn(){
-        console.log(this.that)
-        // return this.state;
+        return localStorage.getItem('loggedIn');
     }
     static getUserDetails(){
-        return this.state.userDetails;
+        return JSON.parse(localStorage.getItem('user'));
     }
     static setLoggedIn(val){
         this.setState({ loggedIn: val });
@@ -28,4 +27,8 @@ export default class AuthService extends Component{
     static setUserDetails(data){
         this.setState({userDetails: {...data}})
     }
+
+    
+
+
 } 

@@ -149,7 +149,7 @@ body {
 .continue-btn{
     border: none;
     background: forestgreen;
-    width: 320px;
+    width: 314px;
     height: 35px;
     color: white;
     font-weight: 500;
@@ -193,7 +193,8 @@ body {
     font-weight: 500;
     font-size: 13px;
     color: #333;
-    margin-left: 20px;
+    margin-top: 30px;
+    display: block;
 }
 .anchor{
     color: #05b1e6;
@@ -279,3 +280,11 @@ body {
 .MuiPaper-elevation1{
     box-shadow: none !important;
 }
+
+.MuiAlert-standardWarning{
+    padding: 4px 17px;
+    border-radius: 0px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(102, 60, 0, .1);
+}
+

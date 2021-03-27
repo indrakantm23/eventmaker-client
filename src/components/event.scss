@@ -143,6 +143,7 @@
     color: #444;
     font-weight: 500;
     font-size: 14px;
+    text-transform: capitalize;
 }
 .cat-price{
     font-size: 14px;
@@ -202,4 +203,21 @@
 }
 .rdw-editor-main:focus{
     border: 1px solid #333 !important;
+}
+.MuiButton-root.Mui-disabled{
+    color: rgba(0, 0, 0, 0.26) !important;
+    background: #ddd !important;
+    cursor: not-allowed !important;
+}
+
+.avl-seats{
+    position: absolute;
+    z-index: 10;
+    margin-left: -120px;
+    background: rgba(0,0,0,.5);
+    color: #FFF;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    bottom: 120px;
 }

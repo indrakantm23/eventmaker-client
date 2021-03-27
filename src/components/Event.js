@@ -51,6 +51,7 @@ function Event(props) {
   const [selectedTickets, setSelectedTickets] = useState([]);
   const [loader, setLoader] = useState(true);
   const [event, setEvent] = useState(null);
+  const [freeTicket, setFreeTicket] = useState(0);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -61,12 +62,8 @@ function Event(props) {
   };
 
 
-
-
     useEffect(() => {
         const id = props?.match?.params?.eventid;
-        // console.log(id)
-        // setEventId(id);
         CommonService.getAnEvent(id).then((res) => {
             setEvent(res.event);
             setLoader(false);
@@ -74,8 +71,8 @@ function Event(props) {
     }, []);
 
     const AddTicketToList = (data) => {
-            data.ticket_count = 1;
-            setSelectedTickets(prevArr => [...prevArr, data]);    
+        data.ticket_count = 1;
+        setSelectedTickets(prevArr => [...prevArr, data]);    
     }
 
     const IsAlreadyAdded = (id) => {
@@ -96,7 +93,6 @@ function Event(props) {
         let index = selectedTickets.findIndex(a => a.id === id);
         selectedTickets.splice(index, 1);
         setSelectedTickets(prevArr => [...prevArr, data]); 
-        // console.log(selectedTickets)   
     }
 
     const getAmount = (arr) => {
@@ -143,8 +139,23 @@ function Event(props) {
     }
 
     const sendBookingEmail = () => {
-        let user = JSON.parse(localStorage.getItem('userData'))
-        CommonService.sendBookingEmail(selectedTickets, user, event).then(res=> console.log(res))
+        let user = JSON.parse(localStorage.getItem('user'))
+        if(event.entryMode === 'free'){
+            CommonService.sendBookingEmail(freeTicket, user, event).then((res) => {
+                setOpen(false);
+                CommonService.showToast(res.message);
+                setFreeTicket(0);
+            });
+        }else{
+            CommonService.sendBookingEmail(selectedTickets, user, event).then((res) => {
+                setOpen(false);
+                CommonService.showToast(res.message);
+            });
+        }
+    }
+
+    const createMarkup = (dom) =>{
+        return {__html: dom};
     }
 
 
@@ -155,13 +166,14 @@ function Event(props) {
                     <div className="event-container">
                         <div className="left-card">
                             <img src={event.banner || Placeholder} className="event-banner" />
+                            {event.avlSeats &&<span className="avl-seats">{event.avlSeats} seats available</span>}
                             <div className="event-namecard">
                                 <div style={{flex: 1}}>
                                     <h4 className="event-name">{event.eventName}</h4>
                                     <p className="event-location">{CommonService.trimString(event.full_address, 63)}</p>
                                 </div>
                                 <div style={{display: 'flex', gap: 20}}>
-                                    <h3 style={{marginTop: 10}}>₹ { CommonService.numberWithCommas(getAmount(event.ticketCategory)) || 'Free'}</h3>
+                                    <h3 style={{marginTop: 10}}>{event.entryMode === 'free' ? 'Free' : '₹'+ CommonService.numberWithCommas(getAmount(event.ticketCategory))}</h3>
                                     <Button variant="contained" className="book-btn" onClick={handleClickOpen}>
                                         Book
                                     </Button>
@@ -169,7 +181,7 @@ function Event(props) {
                             </div>
                             <div className="about-div">
                                 <h3 className="event-name">About </h3>
-                                <p className="event-location">{event.description}</p>
+                                <p className="event-location" dangerouslySetInnerHTML={createMarkup(event.description)} ></p>
                             </div>
                         </div>
                         <div className="right-card">
@@ -258,14 +270,9 @@ function Event(props) {
                                         </EmailShareButton>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
-
             )}
 
             <Dialog
@@ -276,7 +283,36 @@ function Event(props) {
                     aria-labelledby="alert-dialog-slide-title"
                     aria-describedby="alert-dialog-slide-description"
                 >
-                    <DialogTitle id="alert-dialog-slide-title">{"Select Category"}</DialogTitle>
+                    {event?.entryMode === 'free' ? 
+                    <>
+                    <DialogTitle id="alert-dialog-slide-title">{"Select Seats"}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                                {/* <div className="cat-div"> */}
+                                    {freeTicket >0 ? 
+                                    <div className="count-icons">
+                                        <RemoveIcon onClick={()=> setFreeTicket(freeTicket - 1)} style={{float: 'left', marginTop: 20}} />
+                                        <span style={{marginTop: 20, display: 'inline-block'}}>{freeTicket}</span>
+                                        <AddIcon onClick={()=> setFreeTicket(freeTicket + 1)} style={{float: 'right', marginTop: 20}}/>
+                                    </div> 
+                                    : 
+                                    <button className="add-button" style={{marginTop: 0}} onClick={()=> setFreeTicket(1)}>Add</button>}
+                                {/* </div> */}
+                    </DialogContentText>
+                    
+                    </DialogContent>
+                    <DialogActions>
+                    {/* <h4 className="show-total">₹ {GetTotalPrice()}</h4> */}
+                    <Button onClick={handleClose} color="primary" className="cancel">
+                        Cancel
+                    </Button>
+                    <Button onClick={()=> sendBookingEmail()} color="primary" className="continue" disabled={freeTicket == 0}>
+                        Proceed
+                    </Button>
+                    </DialogActions></>
+                    :
+                    <>
+                    <DialogTitle id="alert-dialog-slide-title">{"Select seat and Category"}</DialogTitle>
                     <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         {event?.ticketCategory?.map((cat) => {
@@ -304,16 +340,17 @@ function Event(props) {
                     <Button onClick={handleClose} color="primary" className="cancel">
                         Cancel
                     </Button>
-                    <Button onClick={()=> sendBookingEmail()} color="primary" className="continue">
+                    <Button onClick={()=> sendBookingEmail()} color="primary" className="continue" disabled={GetTotalPrice() == 0}>
                         Proceed
                     </Button>
-                    </DialogActions>
+                    </DialogActions></>}
             </Dialog>
 
             <Backdrop open={loader}>
                     <CircularProgress color="inherit" style={{'color': '#fff'}}/>
             </Backdrop>
 
+            {loader && <div className="loader"></div>}
 
         </div>
     )

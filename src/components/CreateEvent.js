@@ -10,6 +10,7 @@ import PaymentForm from './pages/PaymentForm';
 import AlertMessage from './../shared/Alert';
 import './common.scss';
 import CommonService from './commonService';
+import AuthService from './../auth/AuthService';
 
 class CreateEvent extends Component{
     constructor(props){
@@ -22,6 +23,14 @@ class CreateEvent extends Component{
     }
 
 
+    componentDidMount(){
+      if(!AuthService.isLoggedIn()){
+        this.props.history.push({ 
+          pathname: "/login", 
+          state: { url: this.props.location.pathname }
+        })
+      }
+    }
 
 
       

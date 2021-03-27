@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.scss';
 import Header from './shared/Header';
 import Footer from './shared/Footer';
+import CommonService from './components/commonService';
 import AppTemplate from './AppTemplate';
 import { Router } from './routing/Routing';
 import { Provider } from 'react-redux';
@@ -25,6 +26,10 @@ function App() {
                     currentCity: tempCity,
                     fullAddress: res.results[0].formatted
                 }))
+                if(localStorage.getItem('currentCity') === null) {
+                    CommonService.setCurrentCity(res.results[0].formatted.split(' ')[0]?.replace(/\,/, ''));
+                }
+                
                 localStorage.setItem('currentLocation', res.results[0].formatted)
             })
     }

@@ -6,8 +6,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import BackupIcon from '@material-ui/icons/Backup';
 import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { Input, Label } from './../components/pages/FormFields';
+import { makeStyles } from '@material-ui/core/styles';
+import { Label } from './../components/pages/FormFields';
 import CommonService from './../components/commonService';
 
 export default function Signup(props) {
@@ -42,6 +42,7 @@ export default function Signup(props) {
     const [firstnameFocused, setFirstnameFocused] = useState(false);
     const [lastnameFocused, setLastNameFocused] = useState(false);
     const [avatar, setProfileImage] = useState('');
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     const [loader, setLoader] = useState(false);
     const [registered, setRegistered] = useState(false);
@@ -74,10 +75,10 @@ export default function Signup(props) {
     
 
     function Register(e) {
-        setLoader(true);
         e.preventDefault()
         console.log(avatar)
         if(firstName !== '' && lastName !== '' && email !== '' && password !== ''){
+            setLoader(true);
             CommonService.regiserUser({firstName, lastName, email, password, avatar}).then((res) => {
                 console.log(res)
                 setLoader(false);
@@ -88,7 +89,7 @@ export default function Signup(props) {
             })
         }
         else{
-            console.log('All fields are mandatory')
+            setShowErrorMessage(true);
         }
     }
 
@@ -98,6 +99,11 @@ export default function Signup(props) {
             
         {!registered ? 
             <form style={{display: 'block', margin: '0 auto', width: '40%'}} onSubmit={(e)=> Register(e)}>
+                {showErrorMessage && 
+                    <Alert severity="error" color="warning">
+                        All fields are mandatory
+                    </Alert>
+                }
                 <h5 className="heading">Register for complete access </h5>
                 <div className="form-input-container" style={{position: 'relative', width: 310}}>
                     <Label 

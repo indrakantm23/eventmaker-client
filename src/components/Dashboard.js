@@ -48,7 +48,7 @@ class Dashboard extends Component{
                 <div className="container">
                     <div className="overlay"></div>
                     <div className="heading-container">
-                        {this.state.currentLocation &&<h1 className="events-heading">Events happening in {this.state.currentLocation.split(' ')[0]} </h1>}
+                        {this.state.currentLocation &&<h1 className="events-heading">Events happening in {CommonService.getCurrentCity()} </h1>}
                         <div className="button-group-container">
                             <ButtonGroup variant="text" color="primary" aria-label="text primary button group">
                                 <Button onClick={()=> this.openEventByCategory('/events')}>Events</Button>
@@ -71,7 +71,7 @@ class Dashboard extends Component{
                 {this.state.eventData && 
                     this.state.eventData.map(data => {
                         return(
-                            <EventCard data={data} onclick={()=> this.openEvent(data._id)} />
+                            <EventCard data={data} onclick={()=> this.openEvent(data._id)} key={data._id} />
                         )
                     })
                 }
@@ -80,6 +80,7 @@ class Dashboard extends Component{
                 <Backdrop open={this.state.loader}>
                     <CircularProgress color="inherit" style={{'color': '#fff'}}/>
                 </Backdrop>
+                {this.state.loader && <div className="loader"></div>}
             </div>
         )
     }

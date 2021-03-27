@@ -29,6 +29,11 @@ export default class CommonService {
                     .then(res => {return res.data})
     }
 
+    // GET ALL BOOKINGS
+    static getMyBookings(userId){
+        return axios.get(`${this.getApiUrl()}users/get-bookings/${userId}`)
+                    .then(res => {return res.data})
+    }
 
 
 //********************************************************* EVENT API CALLS *********************************************************** */
@@ -36,6 +41,12 @@ export default class CommonService {
     // GET ALL EVENTS
     static getEvents(){
         return axios.get(`${this.getApiUrl()}events/get-events`)
+                    .then(res => {return res.data})
+    }
+
+    // SEARCH EVENTS
+    static searchEvents(key){
+        return axios.get(`${this.getApiUrl()}events/search/${key}`)
                     .then(res => {return res.data})
     }
 
@@ -66,9 +77,6 @@ export default class CommonService {
 
 
 
-
-
-
 //********************************************************* COMMON FUNCTIONS *********************************************************** */
 
 static convertTime(time){
@@ -94,5 +102,53 @@ static trimString(str, range) {
 static numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+static getCurrentCity(){
+    return localStorage.getItem('currentCity');
+}
+
+static setCurrentCity(city){
+    localStorage.setItem('currentCity', city);
+}
+
+// Show toast
+static showToast(text, duration = 3000) {
+    if(canUseDOM) {
+        document.getElementById('global-toast-text').text = text;
+        document.getElementById("global-toast-text").innerText = text;
+        if(text.indexOf("\n") !== -1) {
+            var lines = text.split("\n");
+            var str = "";
+            for(var i=0;i<lines.length;i++) {
+                str += "<p>"+ lines[i] +"</p>"
+            }
+            document.getElementById("global-toast-text").innerHTML = "<div>"+ str +"</div>";
+        }
+        document.getElementById('global-toast').style.display = "block"
+        setTimeout(() => {
+            document.getElementById('global-toast').style.display = "none";
+        }, 3000)
+    }
+}
+
+// get date
+static getDate = date => {
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var d = new Date(date);
+    if(d.getDate() == new Date().getDate() && d.getMonth() == new Date().getMonth()){
+        return 'Today';
+    }
+    else if(d.getDate() + 1 == new Date().getDate()+1 && d.getMonth()+1 == new Date().getMonth()+1){
+        return 'Tomorrow';
+    }
+    else if(d.getDate() - 1 == new Date().getDate()-1 && d.getMonth()-1 == new Date().getMonth()-1){
+        return 'Yesterday';
+    }
+    else{
+        return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear();
+    }
+}
+
+
 
 }
