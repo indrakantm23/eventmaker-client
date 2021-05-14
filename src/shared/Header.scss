@@ -184,3 +184,25 @@ svg{
     padding: 8px;
     float: right;
 }
+
+.logout-box{
+    position: fixed;
+    background: #FFF;
+    top: 64px;
+    left: 300px;
+    box-shadow: 0 0 3px #ccc;
+    width: 150px;
+    height: 65px;
+    border-radius: 2px;
+}
+.logout-box::before{
+    position: absolute;
+    content: '';
+    background: #FFF;
+    width: 15px;
+    height: 15px;
+    left: 68px;
+    top: -8px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+}

@@ -75,6 +75,11 @@ export default class CommonService {
                     .then(res => {return res.data})
     }
 
+    // GET ALL POSTED EVENTS
+    static getMyEvents(userId){
+        return axios.get(`${this.getApiUrl()}events/get-events/${userId}`)
+                    .then(res => {return res.data})
+    }
 
 
 //********************************************************* COMMON FUNCTIONS *********************************************************** */
@@ -149,6 +154,18 @@ static getDate = date => {
     }
 }
 
+// get amount
+static getAmount(arr){
+    if (arr.length === 1) {
+        return arr[0].amount;
+    }
+    else if(arr.length > 1) {
+        return arr.sort((a, b) => a.amount - b.amount)[0].amount;
+    }
+    else {
+        return 0;
+    }
+}
 
 
 }

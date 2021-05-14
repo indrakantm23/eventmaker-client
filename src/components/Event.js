@@ -40,7 +40,7 @@ import {
 
 const Marker = ({text}) => {
     return (
-          <div><b>{text}</b></div>
+        <div><b>{text}</b></div>
     );
 }
 
@@ -63,12 +63,12 @@ function Event(props) {
 
 
     useEffect(() => {
-        const id = props?.match?.params?.eventid;
+        const id = props?.history?.location?.state.eventId;
         CommonService.getAnEvent(id).then((res) => {
             setEvent(res.event);
             setLoader(false);
         })
-    }, []);
+    }, [props]);
 
     const AddTicketToList = (data) => {
         data.ticket_count = 1;
@@ -95,17 +95,17 @@ function Event(props) {
         setSelectedTickets(prevArr => [...prevArr, data]); 
     }
 
-    const getAmount = (arr) => {
-        if (arr.length === 1) {
-            return arr[0].amount;
-        }
-        else if(arr.length > 1) {
-            return arr.sort((a, b) => a.amount - b.amount)[0].amount;
-        }
-        else {
-            return 0;
-        }
-    }
+    // const getAmount = (arr) => {
+    //     if (arr.length === 1) {
+    //         return arr[0].amount;
+    //     }
+    //     else if(arr.length > 1) {
+    //         return arr.sort((a, b) => a.amount - b.amount)[0].amount;
+    //     }
+    //     else {
+    //         return 0;
+    //     }
+    // }
 
     const GetTotalPrice = () => {
         if(selectedTickets.length>0) {
@@ -154,6 +154,20 @@ function Event(props) {
         }
     }
 
+    const getOnlineName = url => {
+            if(url.includes('google')){
+                return 'Google Meets';
+            }
+            else if(url.includes('teams')){
+                return 'Microsoft Teams';
+            }
+            else if(url.includes('zooom')){
+                return 'Zoom';
+            }else{
+                return 'Online Event';
+            }
+    }
+
     const createMarkup = (dom) =>{
         return {__html: dom};
     }
@@ -166,14 +180,18 @@ function Event(props) {
                     <div className="event-container">
                         <div className="left-card">
                             <img src={event.banner || Placeholder} className="event-banner" />
-                            {event.avlSeats &&<span className="avl-seats">{event.avlSeats} seats available</span>}
+                            {event.avlSeats &&<span className="avl-seats">
+                                <span className="material-icons outlined center">chair</span>
+                                <span className="center avt-count">{event.avlSeats} </span>
+                                </span>
+                            }
                             <div className="event-namecard">
                                 <div style={{flex: 1}}>
                                     <h4 className="event-name">{event.eventName}</h4>
-                                    <p className="event-location">{CommonService.trimString(event.full_address, 63)}</p>
+                                    <p className="event-location"><strong>Location:</strong> {event.eventMode === 'Online' ? getOnlineName(event.onlineURL) : CommonService.trimString(event.full_address, 63)}</p>
                                 </div>
                                 <div style={{display: 'flex', gap: 20}}>
-                                    <h3 style={{marginTop: 10}}>{event.entryMode === 'free' ? 'Free' : '₹'+ CommonService.numberWithCommas(getAmount(event.ticketCategory))}</h3>
+                                    <h3 style={{marginTop: 10}}>{event.entryMode === 'free' ? 'Free' : '₹'+ CommonService.numberWithCommas(CommonService.getAmount(event.ticketCategory))}</h3>
                                     <Button variant="contained" className="book-btn" onClick={handleClickOpen}>
                                         Book
                                     </Button>

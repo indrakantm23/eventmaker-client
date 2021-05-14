@@ -213,11 +213,26 @@
 .avl-seats{
     position: absolute;
     z-index: 10;
-    margin-left: -120px;
-    background: rgba(0,0,0,.5);
+    margin-left: -60px;
     color: #FFF;
     padding: 5px 10px;
-    border-radius: 50px;
     font-size: 11px;
     bottom: 120px;
+    background: rgba(0,0,0,.6);
+    height: 70px;
+    width: 30px;
+    border-radius: 5px;
+    border: 1px solid rgba(250,250,250,.4);
+}
+.center{
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+.avt-count{
+    font-size: 15px;
+    font-family: 'Google Sans';
+    padding-top: 6px;
+    border-top: 1px solid #bbb;
+    margin-top: 7px;
 }

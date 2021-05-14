@@ -8,7 +8,7 @@ import { Router } from './routing/Routing';
 import { Provider } from 'react-redux';
 import store from './store';
 
-function App() {
+function App(props) {
 
   const [city, setCity] = useState({
     currentCity: 'Select Address',
@@ -40,7 +40,7 @@ function App() {
     <Provider store={store}>
         <div style={{marginTop: 60}}>
           <Router>
-              <Header currentLocation={{city}}/>
+              <Header currentLocation={{city}} {...props} />
               <AppTemplate />
               <Footer/>
           </Router>

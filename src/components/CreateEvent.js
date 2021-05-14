@@ -7,7 +7,6 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EventForm from './pages/Form';
 import PaymentForm from './pages/PaymentForm';
-import AlertMessage from './../shared/Alert';
 import './common.scss';
 import CommonService from './commonService';
 import AuthService from './../auth/AuthService';
@@ -69,17 +68,14 @@ class CreateEvent extends Component{
       }
 
       handlePaymentSetup = (e)=> {
-        
         localStorage.setItem('paymentdetails', JSON.stringify(e))
         this.setState({ activeStep: this.state.activeStep+1 });
         let eventData = JSON.parse(localStorage.getItem('eventdetails'));
         let paymentData = JSON.parse(localStorage.getItem('paymentdetails'));
         const obj = Object.assign(eventData, paymentData)
-        
-        console.log(obj)
-        
+        // console.log(obj)
         CommonService.saveEvent(obj).then((res) => {
-          <AlertMessage label='Your event has been published'/>
+          // <AlertMessage label='Your event has been published'/>
           console.log(res);
             localStorage.removeItem('eventdetails')
             localStorage.removeItem('paymentdetails')

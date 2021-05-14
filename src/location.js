@@ -1,4 +1,6 @@
 export const initAutocomplete = ()=> {
+  // if(document.getElementById("map")){
+  
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: -33.8688, lng: 151.2195 },
       zoom: 13,
@@ -76,4 +78,6 @@ export const initAutocomplete = ()=> {
       });
       map.fitBounds(bounds);
     });
+      
+  // }
   }

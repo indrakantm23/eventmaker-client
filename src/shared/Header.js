@@ -7,6 +7,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Logo1 from './../assets/images/event-maker-logo1.png';
 import CommonService from './../components/commonService';
 import AuthService from './../auth/AuthService';
+import { useHistory } from "react-router-dom";
 
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -37,6 +38,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 function Header(props){
+    let history = useHistory();
 
     const [state, setState] = useState(false);
     // const [isLoggedIn, setLoggedIn] = useState(false);
@@ -45,6 +47,7 @@ function Header(props){
     const [filteredCity, setFilteredCity] = useState([]);
     const [cityName, setCityName] = useState('');
     const [searchData, setSearchData] = useState([]);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
 
     const handleClose = () => {
@@ -54,14 +57,12 @@ function Header(props){
         setState(open)
     }
     useEffect(() => {
-        // setLoggedIn(localStorage.getItem('isLoggedIn'));
         setUserData({...JSON.parse(localStorage.getItem('userData'))})
     }, [])
 
     const searchEvent = (e) => {
         let key = e.target.value;
         if(key){
-            // setSearchData([]);
             CommonService.searchEvents(key).then((res) => {
                 setSearchData(res.data);
             });
@@ -95,20 +96,34 @@ function Header(props){
         setFilteredCity(CITIES.filter(a => a.toLowerCase().includes(str.toLowerCase())).slice(0, 5))
     }
 
-    const openEvent = (id) => {
-        window.location.href='/event/'+id;
+
+    const openEvent = (data) => {
+        let str = data?.eventName?.toLowerCase()?.split(' ')?.join('-');
+        history.push({
+            pathname: `/event/${str}`,
+            state: { eventId: data.id },
+        });
+    }
+
+    const isOn = path => {
+        return window.location.pathname.includes(path);
+    }
+
+    const logout = ()=> {
+        localStorage.clear();
+        window.location.reload();
     }
 
     const list = () => (
         <List>
             <Button className="sidebar-btn" onClick={() => { window.location.href="/" }}><HomeIcon/>Home</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/about" }}><InfoIcon/>About</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/contact-us" }}><EmailIcon/>Contact</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/pricing" }}><PaymentIcon/>Pricing</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/contact" }}><HelpOutlineIcon/>How it works</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/wallet" }}><AccountBalanceWalletIcon/>Wallet</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/bookings" }}><ConfirmationNumberIcon/>My Bookings</Button>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/contact" }}><EventIcon/>My Events</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/bookings') && (window.location.href="/bookings") }}><ConfirmationNumberIcon/>My Bookings</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/my-events') && (window.location.href="/my-events") }}><EventIcon/>My Events</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/wallet') && (window.location.href="/wallet") }}><AccountBalanceWalletIcon/>Wallet</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/pricing') && (window.location.href="/pricing") }}><PaymentIcon/>Pricing</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/how-it-works') && (window.location.href="/how-it-works") }}><HelpOutlineIcon/>How it works</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/about') && (window.location.href="/about") }}><InfoIcon/>About</Button>
+            <Button className="sidebar-btn" onClick={() => { !isOn('/contact-us') && (window.location.href="/contact-us") }}><EmailIcon/>Contact</Button>
         </List>
     )
 
@@ -141,9 +156,18 @@ function Header(props){
             {/* </Tooltip> */}
 
             {AuthService.isLoggedIn() ? 
+            <>
                 <Tooltip title={`Logged in as ${AuthService.getUserDetails()?.firstName} ${AuthService.getUserDetails()?.lastName}`} arrow>
-                    <Avatar alt={AuthService.getUserDetails()?.firstName+' '+ AuthService.getUserDetails()?.lastName} src={AuthService.getUserDetails()?.avatar} style={{display: 'inline-flex', float: 'left', position: 'absolute', top: -5, marginLeft: 12}} />
+                    <Avatar alt={AuthService.getUserDetails()?.firstName+' '+ AuthService.getUserDetails()?.lastName} src={AuthService.getUserDetails()?.avatar} onClick={()=> setShowLogoutModal(!showLogoutModal)} style={{display: 'inline-flex', float: 'left', position: 'absolute', top: -5, marginLeft: 12}} />
                 </Tooltip>
+                {showLogoutModal && 
+                <div className="logout-box">
+                    <Button variant="outlined" color="primary" style={{color: 'white', textTransform: 'inherit', marginLeft: 20,marginTop: 13, background: 'firebrick', border: 'none', width: 110}}  onClick={logout}>
+                        Logout
+                    </Button>
+                </div>
+                }
+            </>
             :
             <Button variant="outlined" color="primary" style={{color: 'white', textTransform: 'inherit', marginLeft: 20, borderColor: 'dimgray', marginTop: 13}} onClick={()=> window.location.href="/login"}>
                 Sign in
@@ -163,7 +187,7 @@ function Header(props){
                 <div className="search-list">
                     {searchData?.map((data) =>{
                         return(
-                            <div className="search-list-div" onClick={()=> openEvent(data.id)}>
+                            <div className="search-list-div" onClick={()=> openEvent(data)}>
                                 <span className="list-name">{data.eventName}</span>
                                 <span className="list-date">{CommonService.getDate(data.startDate)}</span>
                             </div>
