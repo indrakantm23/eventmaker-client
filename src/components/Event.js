@@ -368,7 +368,7 @@ function Event(props) {
                     <CircularProgress color="inherit" style={{'color': '#fff'}}/>
             </Backdrop>
 
-            {loader && <div className="loader"></div>}
+            {/* {loader && <div className="loader"></div>} */}
 
         </div>
     )

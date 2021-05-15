@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {initAutocomplete} from './../../location';
-import { Input, Label } from './FormFields';
+import { Label } from './FormFields';
 import { storage } from './../firebase-store';
-import CommonService from './../commonService';
+// import CommonService from './../commonService';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';

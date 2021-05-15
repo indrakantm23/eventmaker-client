@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Input, Label } from './FormFields';
+import React, { useState } from 'react';
+import { Label } from './FormFields';
 import Radio from '@material-ui/core/Radio';
 import AddIcon from '@material-ui/icons/Add';
 import RadioGroup from '@material-ui/core/RadioGroup';

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import CommonService from './../commonService';
 import AuthService from '../../auth/AuthService';
 import EventCard from './../pages/EventCard';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+// import Button from '@material-ui/core/Button';
+// import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import './../Dashboard.scss';
@@ -43,6 +43,7 @@ class MyEvents extends Component{
         })
     }
 
+
     openEvent = (id) => {
         // str.toLowerCase().split(' ').join('-')
         this.props.history.push('/event/'+id);
@@ -57,7 +58,7 @@ class MyEvents extends Component{
                     {this.state.eventData && 
                         this.state.eventData.map(data => {
                             return(
-                                <EventCard edit={true} data={data} onclick={()=> this.openEvent(data._id)} key={data._id} />
+                                <EventCard edit={true} data={data} onclick={()=> this.openEvent(data._id)} key={data._id} {...this.props} />
                             )
                         })
                     }

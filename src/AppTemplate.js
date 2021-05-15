@@ -10,8 +10,7 @@ const AsyncCreateAnEvent = lodable(() => import('./components/CreateEvent'))
 const AsyncSignUp = lodable(() => import('./auth/Signup'))
 const AsyncLogin = lodable(() => import('./auth/Login'))
 const AsyncEvent = lodable(() => import('./components/Event'))
-// const AsyncEvents = lodable(() => import('./components/Events'))
-
+const AsyncEditEvent = lodable(() => import('./components/EditEvent'))
 const AsyncAbout = lodable(() => import('./components/pages/About'))
 const AsyncPricing = lodable(() => import('./components/pages/Pricing'))
 const AsyncContactUs = lodable(() => import('./components/pages/ContactUs'))
@@ -35,6 +34,7 @@ const AppTemplate = () => (
             <Route exact path={Routes.Wallet} component={AsyncWallet} />
             <Route exact path={Routes.MyBookings} component={AsyncMyBookings} />
             <Route exact path={Routes.MyEvents} component={AsyncMyEvents} />
+            <Route exact path={Routes.EditEvent} component={AsyncEditEvent} />
         </Switch>
     </React.Fragment>
 );

@@ -10,3 +10,4 @@ export const Events = `/looking-for:target`
 export const Wallet = "/wallet"
 export const MyBookings = "/bookings"
 export const MyEvents = "/my-events"
+export const EditEvent = "/edit-event"

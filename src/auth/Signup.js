@@ -14,7 +14,7 @@ export default function Signup(props) {
 
     function validateInput(e){
         let val = e.target.value;
-        if(val == ''){
+        if(val === ''){
             e.target.style.border='1px solid red !important'
         }
     }

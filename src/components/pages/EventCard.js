@@ -3,16 +3,17 @@ import './../common.scss';
 import Calendar from './Calendar';
 import DefaultImage from './../../assets/images/banner-two.jpg';
 import CommonService from './../commonService';
-import { PinDropSharp } from '@material-ui/icons';
+// import { PinDropSharp } from '@material-ui/icons';
 
  function EventCard(props){
-    // console.log(props)
-    const editEvent = (e) => {
-        console.log(e)
+
+    const editEvent = (id) => {
+        props.history.push({
+            pathname: `/edit-event`,
+            state: { eventId: id },
+        });
     }
-    const trimText = str => {
-        return str.length > 40 ? str.substr(0, 40)+'...' : str;
-    }
+
     const getOnlineName = url => {
         if(url) {
             if(url.includes('google')){
@@ -48,7 +49,7 @@ import { PinDropSharp } from '@material-ui/icons';
                 <span className="event-full-address">{getOnlineName(props.data.onlineURL)}</span> :
                 <span className="event-full-address">{props.data.city}{props.data.state && ', '+props.data.state}{props.data.country && ', '+props.data.country}</span> 
                 }
-                {props.edit ? <button className="edit-btn" onClick={(e)=> editEvent(e)}>
+                {props.edit ? <button className="edit-btn" onClick={(e)=> editEvent(props.data._id)}>
                      Edit</button> :
                 <h3 style={{marginTop: -25, display: 'inline-block',float: 'right'}}>{props.data.entryMode === 'free' ? 'Free' : '₹'+ CommonService.numberWithCommas(CommonService.getAmount(props.data.ticketCategory))}</h3>}
             </div>
