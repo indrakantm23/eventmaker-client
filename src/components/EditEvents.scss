@@ -8,3 +8,43 @@
     height: 48px !important;
     min-height: 0 !important;
 }
+
+.MuiCollapse-entered{
+    padding: 15px 0;
+}
+
+.sub-container{
+    margin-top: 80px;
+}
+
+.sub-container h1{
+    font-weight: 500;
+    font-family: 'Roboto';
+    font-size: 17px;
+    padding-left: 15px;
+    margin-bottom: 20px;
+    margin-top: 80px;
+}
+
+.MuiFormControl-root{
+    flex: 1;
+    margin: 2px 15px;
+}
+
+.time-inp .MuiFormControl-root{
+    margin: 2px 0px !important;
+}
+.radiogroup{
+    flex-direction: row;
+}
+
+.column-flex{
+    flex-direction: column;
+}
+
+.update-btn-div{
+    margin: 30px;
+}
+.update-btn-div button{
+    text-transform: capitalize;
+}
