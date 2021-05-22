@@ -1,31 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import CommonService from './commonService';
-import { initAutocomplete } from './../location';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-// import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
+import { TICKET_CATEGORIES } from './common';
 import { makeStyles } from '@material-ui/core/styles';
-import Accordion from '@material-ui/core/Accordion';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Backdrop, CircularProgress, Table, Dialog, DialogActions, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Accordion, DialogContent, RadioGroup, FormControlLabel, Radio, ButtonGroup, Button, Select, InputLabel, MenuItem, FormControl, AccordionSummary, AccordionDetails, Typography, ExpandMoreIcon } from './imports/index';
+// import { initAutocomplete } from './../location';
+
 import './EditEvents.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +24,13 @@ function EditEvent(props) {
     // DEFINE STATES
     const [eventData, setEventData] = useState(null);
     const [loader, setLoader] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [selectedTicketCategory, setSelectedTicketCategory] = useState(null);
 
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const setStateData = (event, key) => {
         setEventData((prevState) => ({
@@ -54,8 +39,39 @@ function EditEvent(props) {
         }));
     }
 
+    const updateTicketCategory = (event, key) => {
+        setSelectedTicketCategory((prevState) => ({
+           ...prevState,
+           [key]: event.target.value
+        }));
+    }
+
     const setLocationFromLocalStorage = () => {
         setEventData(JSON.parse(localStorage.getItem('eventdetails')).full_address, 'full_address')
+    }
+
+    
+    const SaveUpdatedTicket = () => {
+        let data = eventData;
+        let arr = data.ticketCategory;
+        for(let i=0; i<arr.length; i++) {
+            if(arr[i].id === selectedTicketCategory.id){
+                Object.assign(arr[i], selectedTicketCategory)
+                console.log(data)
+            }            
+        }
+        setEventData(data);
+        setOpen(false);
+    }
+
+    const saveAndUpdate = () => {
+        CommonService.updateEvent(eventData?._id, eventData).then((res) => {
+            setTimeout(res.result);
+            CommonService.showToast(res.message);
+            setTimeout(() => {
+                props.history.goBack();
+            }, 1000);
+        })
     }
 
     // FUNCTION CALLS
@@ -70,6 +86,7 @@ function EditEvent(props) {
             // console.log('Edit event end')
         }
     }, [props]);
+
 
     return (
         <div>
@@ -105,10 +122,11 @@ function EditEvent(props) {
                                     id="demo-simple-select-outlined"
                                     onChange={(e)=> setStateData(e, 'eventCategory')}
                                     label="Age"
+                                    defaultValue=""
                                 >
-                                    {CommonService.categoryOptions().map((el, i) => {
+                                    {TICKET_CATEGORIES?.map((el, i) => {
                                         return(
-                                            <MenuItem value={el} key={el} selected>{el}</MenuItem>    
+                                            <MenuItem value={el} key={i}>{el}</MenuItem>    
                                         )
                                     })}
                                 </Select>
@@ -252,11 +270,14 @@ function EditEvent(props) {
                                         <TableCell align="left">{row.description}</TableCell>
                                         <TableCell align="left">
                                         <ButtonGroup disableElevation variant="outlined" color="primary">
-                                            <Button>
-                                                <span class="material-icons">edit</span>
+                                            <Button onClick={()=> (
+                                                setSelectedTicketCategory(row),
+                                                setOpen(true)
+                                                )}>
+                                                <span className="material-icons">edit</span>
                                             </Button>
                                             <Button>
-                                                <span class="material-icons">delete</span>
+                                                <span className="material-icons">delete</span>
                                             </Button>
                                         </ButtonGroup>
                                         </TableCell>
@@ -269,12 +290,70 @@ function EditEvent(props) {
                         </AccordionDetails>
                     </Accordion>
 
-                        <div className="update-btn-div">
-                            <Button variant="outlined" color="secondary">
-                                Save and Update
+                    <Dialog
+                        open={open}
+                        keepMounted
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogContent>
+                            <FormControl className={classes.formControl}>
+                                <TextField 
+                                    label="Ticket Category" 
+                                    type="text" 
+                                    variant="outlined" 
+                                    value={selectedTicketCategory?.category} 
+                                    InputLabelProps={{ shrink: true }}
+                                    onChange={(e)=> updateTicketCategory(e, 'category')}
+                                />
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <TextField 
+                                    label="Ticket Amount" 
+                                    type="text" 
+                                    variant="outlined" 
+                                    value={selectedTicketCategory?.amount} 
+                                    InputLabelProps={{ shrink: true }}
+                                    onChange={(e)=> updateTicketCategory(e, 'amount')}
+                                />
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <TextField 
+                                    label="Total seats available" 
+                                    type="text" 
+                                    variant="outlined" 
+                                    value={selectedTicketCategory?.seats} 
+                                    InputLabelProps={{ shrink: true }}
+                                    onChange={(e)=> updateTicketCategory(e, 'seats')}
+                                />
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <TextField 
+                                    label="Description" 
+                                    type="text" 
+                                    variant="outlined" 
+                                    value={selectedTicketCategory?.description} 
+                                    InputLabelProps={{ shrink: true }}
+                                    onChange={(e)=> updateTicketCategory(e, 'description')}
+                                />
+                            </FormControl>
+                        </DialogContent>
+                        <DialogActions> 
+                            <Button onClick={handleClose} color="primary" className="cancel-location">
+                                Cancel
                             </Button>
-                        </div>
+                            <Button onClick={()=> {SaveUpdatedTicket()}} color="primary" className="save-location">
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
 
+                    <div className="update-btn-div">
+                        <Button variant="outlined" color="secondary" onClick={() => saveAndUpdate()}>
+                            Save and Update
+                        </Button>
+                    </div>
 
                     </div>
                     }

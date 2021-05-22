@@ -10,7 +10,7 @@ import CommonService from './../commonService';
     const editEvent = (id) => {
         props.history.push({
             pathname: `/edit-event`,
-            state: { eventId: id },
+            state: { eventId: id,  },
         });
     }
 

@@ -1,0 +1,1 @@
+export const TICKET_CATEGORIES = ["Adventurous", "Business", "Children", "Concert", "Corporate", "Education", "Entertainment", "Event", "Festival", "Finance", "Function", "Gaming", "Other", "Party", "Politics", "Private", "Psychology", "Religious", "Seminars", "Share Market", "Social", "Spiritual", "Sports", "Technology", "Travel"];

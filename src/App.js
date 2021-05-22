@@ -5,8 +5,6 @@ import Footer from './shared/Footer';
 import CommonService from './components/commonService';
 import AppTemplate from './AppTemplate';
 import { Router } from './routing/Routing';
-import { Provider } from 'react-redux';
-import store from './store';
 
 function App(props) {
 
@@ -20,32 +18,31 @@ function App(props) {
         const { latitude, longitude } = position.coords;
         fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=7579c80561b848d4a280fea36965add8`).then(resp => resp.json())
             .then(res => {
-                const tempCity = res ? res.results[0].formatted.split(' ')[0] : 'Select Address';
+                const tempCity = res ? res.results[0].components.city : 'Select Address';
+                let result = res.results[0].components;
                 setCity(prevState => ({
                     ...prevState,
                     currentCity: tempCity,
-                    fullAddress: res.results[0].formatted
+                    fullAddress: `${result.city}, ${result.state}, ${result.country}, ${result.postcode}`,
                 }))
                 if(localStorage.getItem('currentCity') === null) {
-                    CommonService.setCurrentCity(res.results[0].formatted.split(' ')[0]?.replace(/\,/, ''));
+                    CommonService.setCurrentCity(result.components.city);
                 }
                 
-                localStorage.setItem('currentLocation', res.results[0].formatted)
+                localStorage.setItem('currentLocation', `${result.city}, ${result.state}, ${result.country}, ${result.postcode}`)
             })
     }
     navigator.geolocation.getCurrentPosition(successfulLookup, console.log())
   },[])
 
   return (
-    <Provider store={store}>
-        <div style={{marginTop: 60}}>
-          <Router>
-              <Header currentLocation={{city}} {...props} />
-              <AppTemplate />
-              <Footer/>
-          </Router>
-        </div>
-    </Provider>
+      <div style={{marginTop: 60}}>
+        <Router>
+            <Header currentLocation={{city}} {...props} />
+            <AppTemplate />
+            <Footer/>
+        </Router>
+      </div>
   );
 }
 

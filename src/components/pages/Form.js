@@ -7,7 +7,6 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import BackupIcon from '@material-ui/icons/Backup';
-// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './../common.scss';
 
 

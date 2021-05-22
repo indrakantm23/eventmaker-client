@@ -81,6 +81,11 @@ export default class CommonService {
                     .then(res => {return res.data})
     }
 
+    // UPDATE AN EVENT
+    static updateEvent(id, data){
+        return axios.put(`${this.getApiUrl()}events/update-an-event/${id}`, data)
+                    .then(res => {return res.data})
+    }
 
 //********************************************************* COMMON FUNCTIONS *********************************************************** */
 
@@ -167,8 +172,5 @@ static getAmount(arr){
     }
 }
 
-static categoryOptions(){
-    return ["Adventurous", "Business", "Children", "Concert", "Corporate", "Education", "Entertainment", "Event", "Festival", "Finance", "Function", "Gaming", "Other", "Party", "Politics", "Private", "Psychology", "Religious", "Seminars", "Share Market", "Social", "Spiritual", "Sports", "Technology", "Travel"]
-}
 
 }
