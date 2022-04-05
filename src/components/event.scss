@@ -1,6 +1,6 @@
 .event-container{
     overflow: hidden;
-    margin: 70px 10px;
+    margin: 10px;
     display: flex;
     column-gap: 20px;
     font-family: "SF Pro Text","SF Pro Icons","Helvetica Neue","Helvetica","Arial",sans-serif;
@@ -230,9 +230,37 @@
     margin-top: 5px;
 }
 .avt-count{
-    font-size: 15px;
-    font-family: 'Google Sans';
+    font-size: 11px;
     padding-top: 6px;
-    border-top: 1px solid #bbb;
+    border-top: 1px dashed #ccc;
     margin-top: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    word-spacing: 1px;
+}
+
+.location-icon{
+    font-size: 20px;
+    color: #444;
+    margin: 4px 0px 0px -3px;
+    float: left;
+}
+.location-text{
+    float: left;
+    margin-top: 7px;
+    margin-left: 5px;
+}
+.onlineBannerDiv{
+    object-fit: cover;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.onlineBanner{
+    width: 100%;
+}
+.joinMeetingDiv{
+    display: flex;
+    justify-content: center;
 }

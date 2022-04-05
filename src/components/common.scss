@@ -120,7 +120,46 @@ body {
 }
 .form-input-container{
     margin: 25px 0;
+    position: relative;
 }
+
+.location-div{
+    padding: 8px 5px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+.location-city_name{
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+}
+.location-state_name{
+    font-size: 12px;
+    color: #333;
+}
+
+
+.loader {
+    border: 2px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid darkgray;
+    width: 20px;
+    height: 20px;
+    animation: spin .5s linear infinite;
+    position: absolute;
+    left: 0;
+    top: 21px;
+    margin-left: 386px;
+  }
+
+    
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
 
 .input-field{
     border: 1px solid #ccc!important;
@@ -184,7 +223,7 @@ body {
     padding: 30px;
     background: #FFF;
     margin: 20px;
-    margin-top: 80px;
+    margin-top: 20px;
     // box-shadow: 0 0 2px #eee;
 }
 .login-div .heading{
@@ -199,7 +238,7 @@ body {
     fill: #c76358;
 }
 .not-a-member{
-    font-family: 'Google Sans';
+    // font-family: 'Google Sans';
     font-weight: 500;
     font-size: 13px;
     color: #333;
@@ -314,4 +353,9 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+
+.min-height{
+    min-height: calc(100vh - 261px);
 }

@@ -29,14 +29,14 @@ export const initAutocomplete = ()=> {
         return;
       }
       // Clear out the old markers.
-      markers.forEach((marker) => {
+      markers?.forEach((marker) => {
         marker.setMap(null);
       });
       markers = [];
       // For each place, get the icon, name and location.
       const bounds = new window.google.maps.LatLngBounds();
-      places.forEach((place) => {
-        if (!place.geometry) {
+      places?.forEach((place) => {
+        if (!place?.geometry) {
           console.log("Returned place contains no geometry");
           return;
         }

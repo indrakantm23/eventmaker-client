@@ -1,239 +1,385 @@
-import React, { useState, useEffect } from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import Button from '@material-ui/core/Button';
-import SearchIcon from '@material-ui/icons/Search';
-import RoomIcon from '@material-ui/icons/Room';
-import MenuIcon from '@material-ui/icons/Menu';
-import Logo1 from './../assets/images/event-maker-logo1.png';
-import CommonService from './../components/commonService';
-import AuthService from './../auth/AuthService';
+import React, { useState, useEffect } from "react";
+import Tooltip from "@material-ui/core/Tooltip";
+import Button from "@material-ui/core/Button";
+import SearchIcon from "@material-ui/icons/Search";
+import RoomIcon from "@material-ui/icons/Room";
+import MenuIcon from "@material-ui/icons/Menu";
+import Logo1 from "./../assets/images/event-maker-logo1.png";
+import CommonService from "./../components/commonService";
+import AuthService from "./../auth/AuthService";
 import { useHistory } from "react-router-dom";
 
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
 
-import Avatar from '@material-ui/core/Avatar';
-import HomeIcon from '@material-ui/icons/Home';
-import InfoIcon from '@material-ui/icons/Info';
-import EmailIcon from '@material-ui/icons/Email';
-import PaymentIcon from '@material-ui/icons/Payment';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import EventIcon from '@material-ui/icons/Event';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import {DebounceInput} from 'react-debounce-input';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
-import TextField from '@material-ui/core/TextField';
-import { CITIES } from './Cities';
-import './Header.scss';
-
+import Avatar from "@material-ui/core/Avatar";
+import HomeIcon from "@material-ui/icons/Home";
+import InfoIcon from "@material-ui/icons/Info";
+import EmailIcon from "@material-ui/icons/Email";
+import PaymentIcon from "@material-ui/icons/Payment";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
+import ConfirmationNumberIcon from "@material-ui/icons/ConfirmationNumber";
+import EventIcon from "@material-ui/icons/Event";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import { DebounceInput } from "react-debounce-input";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+import TextField from "@material-ui/core/TextField";
+// import { configureStore } from "@reduxjs/toolkit";
+import "./Header.scss";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
+function Header(props) {
+  let history = useHistory();
 
-function Header(props){
-    let history = useHistory();
+  const [state, setState] = useState(false);
+  // const [isLoggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [filteredCity, setFilteredCity] = useState([]);
+  const [cityName, setCityName] = useState("");
+  const [searchData, setSearchData] = useState([]);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    const [state, setState] = useState(false);
-    // const [isLoggedIn, setLoggedIn] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [filteredCity, setFilteredCity] = useState([]);
-    const [cityName, setCityName] = useState('');
-    const [searchData, setSearchData] = useState([]);
-    const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const toggleDrawer = (open) => () => {
+    setState(open);
+  };
+  useEffect(() => {
+    // setUserData({ ...JSON.parse(localStorage.getItem("userData")) });
+  }, []);
 
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-    const toggleDrawer = (open) => (event) => {
-        setState(open)
+  const searchEvent = (e) => {
+    let key = e.target.value;
+    if (key) {
+      CommonService.searchEvents(key).then((res) => {
+        setSearchData(res.data);
+      });
+    } else {
+      setSearchData([]);
     }
-    useEffect(() => {
-        setUserData({...JSON.parse(localStorage.getItem('userData'))})
-    }, [])
+  };
 
-    const searchEvent = (e) => {
-        let key = e.target.value;
-        if(key){
-            CommonService.searchEvents(key).then((res) => {
-                setSearchData(res.data);
-            });
-        }
-        else{
-            setSearchData([]);
-        }
+  const getCityName = (e) => {
+    let key = e.target.value;
+    setCityName(key);
+    if (key && key.length > 0) {
+      CommonService.getPlaces(key).then((res) => {
+        setFilteredCity(res.locations);
+      });
+    } else {
+      setFilteredCity([]);
     }
+  };
+  const setCity = (city) => {
+    setFilteredCity([]);
+    setCityName(city.city_name);
+  };
 
-    const getCityName = (e)=>{
-        let str = e.target.value;
-        setCityName(str);
-        if(str.length > 2) {
-            SearchCity(str)
-        }else{
-            setFilteredCity([]);
-        }
-    }
-    const setCity = (city)=> {
-        setFilteredCity([]);
-        setCityName(city);
-    }
+  const setLocalCity = () => (dispatch) => {
+    CommonService.setCurrentCity(cityName);
+    setOpen(false);
+    setCityName("");
+  };
 
-    const setLocalCity = () => {
-        CommonService.setCurrentCity(cityName);
-        setOpen(false);
-        setCityName('');
-    }
+  const formatCityName = (data) => {
+    const { city_name, state_name, country_name } = data;
+    const fullAddress = `${city_name}${state_name && ", " + state_name}${
+      country_name && ", " + country_name
+    }`;
+    localStorage.setItem("fullAddress", fullAddress);
+    return fullAddress;
+  };
 
-    const SearchCity = (str) => {
-        setFilteredCity(CITIES.filter(a => a.toLowerCase().includes(str.toLowerCase())).slice(0, 5))
-    }
+  const openRoute = (path) => {
+    history.push({
+      pathname: path,
+      state: history?.location?.pathname,
+    });
+    setState(false);
+  };
 
+  const openEvent = (data) => {
+    let str = data?.eventName?.toLowerCase()?.split(" ")?.join("-");
+    history.push({
+      pathname: `/event/${str}`,
+      state: { eventId: data.id },
+    });
+    setSearchData([]);
+  };
 
-    const openEvent = (data) => {
-        let str = data?.eventName?.toLowerCase()?.split(' ')?.join('-');
-        history.push({
-            pathname: `/event/${str}`,
-            state: { eventId: data.id },
-        });
-    }
+  const isOn = (path) => {
+    return window.location.pathname === path;
+  };
 
-    const isOn = path => {
-        return window.location.pathname.includes(path);
-    }
+  const list = () => (
+    <List>
+      <Button
+        className={`sidebar-btn ${isOn("/") ? "active-tab" : "default-tab"}`}
+        onClick={() => {
+          openRoute("/");
+        }}
+      >
+        <HomeIcon />
+        Home
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/bookings") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/bookings") && openRoute("/bookings");
+        }}
+      >
+        <ConfirmationNumberIcon />
+        My Bookings
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/my-events") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/my-events") && openRoute("/my-events");
+        }}
+      >
+        <EventIcon />
+        My Events
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/wallet") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/wallet") && openRoute("/wallet");
+        }}
+      >
+        <AccountBalanceWalletIcon />
+        Wallet
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/pricing") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/pricing") && openRoute("/pricing");
+        }}
+      >
+        <PaymentIcon />
+        Pricing
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/how-it-works") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/how-it-works") && openRoute("/how-it-works");
+        }}
+      >
+        <HelpOutlineIcon />
+        How it works
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/about") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/about") && openRoute("/about");
+        }}
+      >
+        <InfoIcon />
+        About
+      </Button>
+      <Button
+        className={`sidebar-btn ${
+          isOn("/contact-us") ? "active-tab" : "default-tab"
+        }`}
+        onClick={() => {
+          !isOn("/contact-us") && openRoute("/contact-us");
+        }}
+      >
+        <EmailIcon />
+        Contact
+      </Button>
+      {AuthService.isLoggedIn() && (
+        <Button
+          className="sidebar-btn logout-btn"
+          onClick={() => {
+            !isOn("/logout") && openRoute("/logout");
+          }}
+        >
+          <span className="material-icons">logout</span>
+          Logout
+        </Button>
+      )}
+    </List>
+  );
 
-    const logout = ()=> {
-        localStorage.clear();
-        window.location.reload();
-    }
+  return (
+    <header>
+      <MenuIcon onClick={toggleDrawer(true)} className="menu-icon" />
+      <Drawer anchor={"left"} open={state} onClose={toggleDrawer(false)}>
+        {list()}
+      </Drawer>
 
-    const list = () => (
-        <List>
-            <Button className="sidebar-btn" onClick={() => { window.location.href="/" }}><HomeIcon/>Home</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/bookings') && (window.location.href="/bookings") }}><ConfirmationNumberIcon/>My Bookings</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/my-events') && (window.location.href="/my-events") }}><EventIcon/>My Events</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/wallet') && (window.location.href="/wallet") }}><AccountBalanceWalletIcon/>Wallet</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/pricing') && (window.location.href="/pricing") }}><PaymentIcon/>Pricing</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/how-it-works') && (window.location.href="/how-it-works") }}><HelpOutlineIcon/>How it works</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/about') && (window.location.href="/about") }}><InfoIcon/>About</Button>
-            <Button className="sidebar-btn" onClick={() => { !isOn('/contact-us') && (window.location.href="/contact-us") }}><EmailIcon/>Contact</Button>
-        </List>
-    )
+      <img
+        src={Logo1}
+        alt="Event Maker"
+        onClick={() => {
+          window.location.href = "/";
+        }}
+        style={{ cursor: "pointer", width: 160, float: "left" }}
+      />
 
-    return(
-        <header>
-            <MenuIcon onClick={toggleDrawer(true)} className="menu-icon" />
-            <Drawer 
-                anchor={'left'}
-                open={state}
-                onClose={toggleDrawer(false)}
-            >
+      <Tooltip title={"Hello"} arrow>
+        <Button
+          style={{ marginTop: 15 }}
+          color="primary"
+          onClick={() => setOpen(true)}
+        >
+          <RoomIcon />
+          {CommonService.getCurrentCity()}
+        </Button>
+      </Tooltip>
 
-                {AuthService.isLoggedIn() ? 
-                    <div style={{background: '#06101f', height: 100}}>
-                        <Avatar alt={`${AuthService.getUserDetails()?.firstName} ${AuthService.getUserDetails()?.lastName}`} src={userData?.avatar}/>
-                        <h4 className="profile-name">{AuthService.getUserDetails()?.firstName} {AuthService.getUserDetails()?.lastName}</h4>
-                    </div>
-                :
-                <Button variant="outlined" color="primary" style={{color: '#000', textTransform: 'inherit', borderColor: 'dimgray', width: 100, margin: '0 auto', marginTop: 13}} onClick={()=> window.location.href="/login"}>
-                    Sign in
-                </Button>}
+      {AuthService.isLoggedIn() ? (
+        <>
+          <Tooltip
+            title={`Logged in as ${AuthService.getUserDetails()?.firstName} ${
+              AuthService.getUserDetails()?.lastName
+            }`}
+            arrow
+          >
+            <Avatar
+              alt={
+                AuthService.getUserDetails()?.firstName +
+                " " +
+                AuthService.getUserDetails()?.lastName
+              }
+              src={AuthService.getUserDetails()?.avatar}
+              onClick={() => setShowLogoutModal(!showLogoutModal)}
+              style={{
+                display: "inline-flex",
+                float: "left",
+                position: "absolute",
+                top: -5,
+                marginLeft: 12,
+              }}
+            />
+          </Tooltip>
+        </>
+      ) : (
+        <Button
+          variant="outlined"
+          color="primary"
+          style={{
+            color: "white",
+            textTransform: "inherit",
+            marginLeft: 20,
+            borderColor: "dimgray",
+            marginTop: 13,
+          }}
+          onClick={() => (window.location.href = "/login")}
+        >
+          Sign in
+        </Button>
+      )}
 
-                {list()}
-            </Drawer>
+      <div className="search-div">
+        <Button
+          color="primary"
+          className="add-btn"
+          onClick={() => {
+            window.location.href = "/create-an-event";
+          }}
+        >
+          Create Event
+        </Button>
+        {/* <input type="text" placeholder="Search an Event, City or Organiser.." /> */}
+        <DebounceInput
+          minLength={1}
+          debounceTimeout={300}
+          placeholder="Search an Event, City or Organiser.."
+          onChange={(event) => searchEvent(event)}
+        />
+        <div className="search-list">
+          {searchData?.map((data, i) => {
+            return (
+              <div
+                className="search-list-div"
+                key={i}
+                onClick={() => openEvent(data)}
+              >
+                <span className="list-name">{data.eventName}</span>
+                <span className="list-date">
+                  {CommonService.getDate(data.startDate)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <SearchIcon />
+      </div>
 
-            <img src={Logo1} onClick={() => { window.location.href="/" }} style={{cursor: 'pointer', width: 160, float: 'left'}}/>
-
-            {/* <Tooltip title={props.currentLocation.city.fullAddress} arrow> */}
-            <Button style={{marginTop: 15}} color="primary" onClick={()=>setOpen(true)}><RoomIcon/>{CommonService.getCurrentCity()}</Button>
-            {/* </Tooltip> */}
-
-            {AuthService.isLoggedIn() ? 
-            <>
-                <Tooltip title={`Logged in as ${AuthService.getUserDetails()?.firstName} ${AuthService.getUserDetails()?.lastName}`} arrow>
-                    <Avatar alt={AuthService.getUserDetails()?.firstName+' '+ AuthService.getUserDetails()?.lastName} src={AuthService.getUserDetails()?.avatar} onClick={()=> setShowLogoutModal(!showLogoutModal)} style={{display: 'inline-flex', float: 'left', position: 'absolute', top: -5, marginLeft: 12}} />
-                </Tooltip>
-                {showLogoutModal && 
-                <div className="logout-box">
-                    <Button variant="outlined" color="primary" style={{color: 'white', textTransform: 'inherit', marginLeft: 20,marginTop: 13, background: 'firebrick', border: 'none', width: 110}}  onClick={logout}>
-                        Logout
-                    </Button>
-                </div>
-                }
-            </>
-            :
-            <Button variant="outlined" color="primary" style={{color: 'white', textTransform: 'inherit', marginLeft: 20, borderColor: 'dimgray', marginTop: 13}} onClick={()=> window.location.href="/login"}>
-                Sign in
-            </Button>}
-
-            <div className="search-div">
-                <Button color="primary" className="add-btn" onClick={() => { window.location.href="/create-an-event" }}>
-                    Create Event
-                </Button>
-                {/* <input type="text" placeholder="Search an Event, City or Organiser.." /> */}
-                <DebounceInput
-                    minLength={1}
-                    debounceTimeout={300}
-                    placeholder="Search an Event, City or Organiser.."
-                    onChange={event => searchEvent(event)} 
-                />
-                <div className="search-list">
-                    {searchData?.map((data) =>{
-                        return(
-                            <div className="search-list-div" onClick={()=> openEvent(data)}>
-                                <span className="list-name">{data.eventName}</span>
-                                <span className="list-date">{CommonService.getDate(data.startDate)}</span>
-                            </div>
-                        )
-                    })}
-                </div>
-                <SearchIcon/>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          Not in {CommonService.getCurrentCity()}?
+        </DialogTitle>
+        <DialogContent>
+          {/* <span style={{marginBottom: 10, display: 'block', fontSize: 13}}>Change your location</span> */}
+          <TextField
+            id="standard-basic"
+            className="city-name"
+            autoFocus
+            label="Enter your city name"
+            value={cityName}
+            onChange={(e) => getCityName(e)}
+          />
+          {filteredCity.length > 0 && (
+            <div>
+              {filteredCity.map((res, i) => {
+                return (
+                  <li className="list" key={i} onClick={() => setCity(res)}>
+                    {formatCityName(res)}
+                  </li>
+                );
+              })}
             </div>
-
-
-            <Dialog
-                open={open}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="alert-dialog-slide-title">Not in {CommonService.getCurrentCity()}?</DialogTitle>
-                <DialogContent>
-                    {/* <span style={{marginBottom: 10, display: 'block', fontSize: 13}}>Change your location</span> */}
-                    <TextField id="standard-basic" className="city-name" autoFocus label="Enter your city name" value={cityName} onChange={(e) => getCityName(e)} />
-                    <div>
-                        
-                    </div>
-                    {filteredCity.length>0 &&
-                    <div>
-                        {filteredCity.map((res) => {
-                            return(
-                                <li className="list" onClick={()=> setCity(res)}>{res}</li>
-                            )
-                        })}    
-                    </div>}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary" className="cancel-location">
-                        Cancel
-                    </Button>
-                    <Button onClick={setLocalCity} color="primary" className="save-location">
-                        Save
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-        </header>
-    )
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleClose}
+            color="primary"
+            className="cancel-location"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={setLocalCity}
+            color="primary"
+            className="save-location"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </header>
+  );
 }
 
 export default Header;

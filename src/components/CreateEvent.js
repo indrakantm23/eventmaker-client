@@ -56,6 +56,8 @@ class CreateEvent extends Component{
             return <EventForm onclick={this.changeHandle} />
           case 1:
             return <PaymentForm onclick={this.handlePaymentSetup} />
+          default: 
+            return null
             
         }
       }

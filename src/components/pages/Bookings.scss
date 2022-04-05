@@ -3,39 +3,34 @@ body{
     background: #F1F3F4;
 }
 .booking-div{
-    min-height: 490px;
+    // min-height: 490px;
     padding: 20px;
 }
 
+.bookings-div{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 15px;
+}
+
 .booking-div h1{
-    width: calc(90% + 15px);
-    margin: 0 auto;
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 500;
     color: #222;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     margin-top: 10px;
-    font-family: 'Google sans';
+    font-family: sans-serif;
 }
 
 .booking-image{
-    width: 95%;
+    width: 100%;
     height: 130px;
     object-fit: cover;
-    margin-right: 15px;
 }
 
 .bookings-container{
-    position: relative;
-    width: 90%;
-    margin: 0 auto;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    border-bottom: 1px solid #e9e9e9;
     background: #FFF;
-    padding: 15px;
-    display: grid;
-    grid: auto / 25% 25% 25% 25%;
+    padding: 3px;
 }
 
 // .bookings-container div:not(:last-child) {
@@ -44,7 +39,8 @@ body{
 
 .bookings-container h4{
     font-size: 15px;
-    font-family: 'Google sans';
+    font-family: sans-serif;
+    font-weight: 500;
 }
 .name-container{
     display: inline-block;
@@ -59,8 +55,9 @@ body{
 .booked-event-date{
     font-size: 12px;
     display: block;
-    font-family: 'Google sans';
-    margin-top: 3px;
+    font-family: sans-serif;
+    margin-top: 6px;
+    margin-left: -2px;
 }
 .booked-on{
     color: rgb(85, 85, 85);
@@ -85,7 +82,7 @@ body{
     outline: none;
     color: #FFF;
     padding: 5px 10px;
-    font-family: 'Google sans';
+    font-family: sans-serif;
     background: $primary-color;
     border-radius: 2px;
     font-size: 13px;
@@ -94,6 +91,34 @@ body{
 }
 
 .bottom{
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.event-name-div{
+    padding: 10px;
+}
+
+.total-seats{
+    margin-left: 10px;
+    border-bottom: 1px dashed rgb(187, 187, 187);
+    padding-bottom: 7px;
+    font-size: 12px;
+    border-top: 1px dashed #ddd;
+    padding-top: 7px;
+    display: block;
+}
+
+.event-date-position{
     position: absolute;
-    bottom: 10px;
+    top: 108px;
+    background: rgba(0,0,0,.7);
+    right: 8px;
+    border-radius: 50px;
+    font-size: 10px;
+    padding: 3px 7px;
+    text-transform: uppercase;
+    color: #FFF;
+    letter-spacing: .3px;
 }

@@ -1,104 +1,96 @@
-import React, { Component } from 'react';
-import CommonService from './commonService';
-import EventCard from './pages/EventCard';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import './Dashboard.scss';
+import React, { useState, useEffect } from "react";
+import CommonService from "./commonService";
+import EventCard from "./pages/EventCard";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import "./Dashboard.scss";
+import { Events } from "./Events";
+import { Headings } from "./constants";
 
-class Dashboard extends Component{
-    constructor(props){
-        super(props);
-        this.state={
-            startDate: null,
-            currentLocation: null,
-            eventData: null,
-            loader: true
-        }
-    }
-    
-    componentDidMount(){
-        let address = localStorage.getItem('currentLocation');
-        if(address){
-            this.setState({ currentLocation: address })
-        }
-        CommonService.getEvents().then((res) => {
-            this.setState({ eventData: res.events, loader: false })
-        })
-    }
+const Dashboard = (props) => {
+  const [currentCity, setCurrentCity] = useState();
+  const [eventData, setEventData] = useState(null);
+  const [loader, setLoader] = useState(true);
+  const eventProps = {
+    heading: Headings.MOST_POPOLAR,
+    data: eventData,
+  };
 
+  const city = CommonService.getCurrentCity();
 
-    getHypelink = (id, str) => {
-        // return `/${str.toLowerCase().split(' ').join('-')}/${id}`;
-        return `/${id}`;
-    }
+  useEffect(() => {
+    CommonService.getEvents().then((res) => {
+      setEventData(res.events);
+      setLoader(false);
+    });
+  }, []);
 
-    openEventByCategory = (target) => {
-        this.props.history.push('looking-for-'+target);
-    }
+  useEffect(() => {
+    console.log("Dashboard called");
+    setCurrentCity(CommonService.getCurrentCity());
+  }, [city]);
 
+  const openEventByCategory = (target) => {
+    props.history.push("looking-for-" + target);
+  };
 
-    render(){
-        return(
-            <div>
-                <div className="container">
-                    <div className="overlay"></div>
-                    <div className="heading-container">
-                        {this.state.currentLocation &&<h1 className="events-heading">Events happening in {CommonService.getCurrentCity()} </h1>}
-                        <div className="button-group-container">
-                            <ButtonGroup variant="text" color="primary" aria-label="text primary button group">
-                                <Button onClick={()=> this.openEventByCategory('events')}>Events</Button>
-                                <Button onClick={()=> this.openEventByCategory('parties')}>Parties</Button>
-                                <Button onClick={()=> this.openEventByCategory('exhibitions')}>Exhibitions</Button>
-                                <Button onClick={()=> this.openEventByCategory('seminars')}>Seminars</Button>
-                            </ButtonGroup>
-                        </div>
-                    </div>
+  return (
+    <div>
+      <div className="container">
+        <div className="overlay"></div>
+        <div className="heading-container">
+          {currentCity && (
+            <h1 className="events-heading">
+              {`${Headings.EVENTS_HAPPENING} ${currentCity}`}
+            </h1>
+          )}
+          <div className="button-group-container">
+            <ButtonGroup
+              variant="text"
+              color="primary"
+              aria-label="text primary button group"
+            >
+              <Button onClick={() => openEventByCategory("events")}>
+                Events
+              </Button>
+              <Button onClick={() => openEventByCategory("parties")}>
+                Parties
+              </Button>
+              <Button onClick={() => openEventByCategory("exhibitions")}>
+                Exhibitions
+              </Button>
+              <Button onClick={() => openEventByCategory("seminars")}>
+                Seminars
+              </Button>
+            </ButtonGroup>
+          </div>
+        </div>
+      </div>
 
-                   
+      {/* DISPLAY EVENTS HAPPENING */}
+      <Events {...eventProps} />
 
-                </div>
-               
+      {/* DISPLAY EVENTS IN MY CITY */}
+      <h1 className="common-heading">Event in {currentCity}</h1>
+      <div className="event-grid-div">
+        {eventData &&
+          eventData.map((data) => {
+            return <EventCard data={data} key={data._id} {...props} />;
+          })}
+      </div>
 
+      {/* CHOOSE BY CHOICE */}
+      <h1 className="common-heading">Select by Cities</h1>
+      <div className="event-grid-div"></div>
 
-            {/* DISPLAY EVENTS HAPPENING */}
-            <h1 className="common-heading">Discover most popular Events</h1>
-            <div className="event-grid-div">
-                {this.state.eventData && 
-                    this.state.eventData.map(data => {
-                        return(
-                            <EventCard data={data} key={data._id} {...this.props} />
-                        )
-                    })
-                }
-            </div>
+      <Backdrop open={loader}>
+        <CircularProgress color="inherit" style={{ color: "#fff" }} />
+      </Backdrop>
+      {/* {loader && <div className="loader"></div>} */}
+    </div>
+  );
+};
 
-            {/* DISPLAY EVENTS IN MY CITY */}
-            <h1 className="common-heading">Event in your City - {localStorage.getItem('currentCity')}</h1>
-            <div className="event-grid-div">
-                {this.state.eventData && 
-                    this.state.eventData.map(data => {
-                        return(
-                            <EventCard data={data} key={data._id} {...this.props} />
-                        )
-                    })
-                }
-            </div>
-
-            {/* CHOOSE BY CHOICE */}
-            <h1 className="common-heading">Select by category</h1>
-            <div className="event-grid-div">
-
-            </div>
-            
-                <Backdrop open={this.state.loader}>
-                    <CircularProgress color="inherit" style={{'color': '#fff'}}/>
-                </Backdrop>
-                {/* {this.state.loader && <div className="loader"></div>} */}
-            </div>
-        )
-    }
-}
-
-export default  Dashboard;
+export default Dashboard;

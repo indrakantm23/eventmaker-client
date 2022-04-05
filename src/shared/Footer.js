@@ -6,7 +6,7 @@ import './Footer.scss';
 function Footer() {
     return (
         <footer>
-            <img src={Logo1} style={{width: 160, float: 'left'}}/>
+            <img alt="Event Maker" src={Logo1} style={{width: 160, float: 'left'}}/>
         </footer>
     )
 }
