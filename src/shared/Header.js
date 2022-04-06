@@ -28,6 +28,8 @@ import { DebounceInput } from "react-debounce-input";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import TextField from "@material-ui/core/TextField";
+import store from "../redux/store";
+import { UPDATE_CURRENT_CITY } from "../redux/actionsTypes";
 // import { configureStore } from "@reduxjs/toolkit";
 import "./Header.scss";
 
@@ -45,6 +47,7 @@ function Header(props) {
   const [filteredCity, setFilteredCity] = useState([]);
   const [cityName, setCityName] = useState("");
   const [searchData, setSearchData] = useState([]);
+  const [currentCity, setCurrentCity] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleClose = () => {
@@ -54,8 +57,20 @@ function Header(props) {
     setState(open);
   };
   useEffect(() => {
-    // setUserData({ ...JSON.parse(localStorage.getItem("userData")) });
+    setCurrentCity(store.getState().city);
+    store.subscribe(() => {
+      setCurrentCity(store.getState().city);
+    });
   }, []);
+
+  const dispatchCity = (city) => {
+    store.dispatch({
+      type: UPDATE_CURRENT_CITY,
+      payload: {
+        city,
+      },
+    });
+  };
 
   const searchEvent = (e) => {
     let key = e.target.value;
@@ -84,8 +99,8 @@ function Header(props) {
     setCityName(city.city_name);
   };
 
-  const setLocalCity = () => (dispatch) => {
-    CommonService.setCurrentCity(cityName);
+  const setLocalCity = () => {
+    dispatchCity(cityName);
     setOpen(false);
     setCityName("");
   };
@@ -245,7 +260,7 @@ function Header(props) {
           onClick={() => setOpen(true)}
         >
           <RoomIcon />
-          {CommonService.getCurrentCity()}
+          {currentCity}
         </Button>
       </Tooltip>
 
@@ -337,7 +352,7 @@ function Header(props) {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle id="alert-dialog-slide-title">
-          Not in {CommonService.getCurrentCity()}?
+          Not in {currentCity}?
         </DialogTitle>
         <DialogContent>
           {/* <span style={{marginBottom: 10, display: 'block', fontSize: 13}}>Change your location</span> */}

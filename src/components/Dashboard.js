@@ -8,6 +8,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import "./Dashboard.scss";
 import { Events } from "./Events";
 import { Headings } from "./constants";
+import store from "../redux/store";
 
 const Dashboard = (props) => {
   const [currentCity, setCurrentCity] = useState();
@@ -18,19 +19,16 @@ const Dashboard = (props) => {
     data: eventData,
   };
 
-  const city = CommonService.getCurrentCity();
-
   useEffect(() => {
     CommonService.getEvents().then((res) => {
       setEventData(res.events);
       setLoader(false);
     });
+    setCurrentCity(store.getState().city);
+    store.subscribe(() => {
+      setCurrentCity(store.getState().city);
+    });
   }, []);
-
-  useEffect(() => {
-    console.log("Dashboard called");
-    setCurrentCity(CommonService.getCurrentCity());
-  }, [city]);
 
   const openEventByCategory = (target) => {
     props.history.push("looking-for-" + target);
